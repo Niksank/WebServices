@@ -1,5 +1,5 @@
-// Core
-const mock = require('../../models/get-user.js')
+// Dependencies
+const Schema = require('../../models/article.js')
 
 module.exports = class Destroy {
   constructor (app) {

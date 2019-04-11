@@ -16,22 +16,23 @@ module.exports = class Search {
    * Middleware
    */
   middleware () {
- 
-    this.app.get('/article/search/', validator.express(this.check), (req, res) => {
+    this.app.get('/article/search', validator.express(this.check), (req, res) => {
       try {
-        const result = {}
-        articles.find(id, (err, data) => {
-          console.log(">>>> " + data );
-        });
-  
-    } catch (e) {
-        console.error(`[ERROR] article/search -> ${e}`)
+        const articleModel = new this.ArticleModel(req.body)
+
+        articleModel.findbyId().then(article => {
+          res.status(200).json(article || {})
+        }).catch(() => {
+          res.status(200).json({})
+        })
+      } catch (e) {
+        console.error(`[ERROR] article/create -> ${e}`)
         res.status(400).json({
           'code': 400,
           'message': 'Bad request'
         })
       }
-  } 
+    })
   }
 
 

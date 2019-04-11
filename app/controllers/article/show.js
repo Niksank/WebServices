@@ -1,9 +1,12 @@
-// Core
-let mock = require('../../models/get-user.js')
+// Dependencies
+const Schema = require('../../models/article.js')
+const validator = require('node-validator')
 
-module.exports = class Show {
-  constructor (app) {
+module.exports = class ShowArticle {
+  constructor (app, config, connect) {
     this.app = app
+    this.config = config
+    this.ArticleModel = connect.model('Article', Schema)
 
     this.run()
   }
@@ -12,16 +15,14 @@ module.exports = class Show {
    * Middleware
    */
   middleware () {
-    this.app.get('/article/show/:id', (req, res) => {
+   this.app.get('/article/show/:id',(req, res) => {
       try {
-        if (!req.params || !req.params.id.length) {
-          res.status(404).json({
-            code: 404,
-            message: 'Not Found'
+        this.ArticleModel.findById(req.params.id).then(article => {
+            res.status(200).json(article || {})
+            
+          }).catch(() => {
+            res.status(200).json({})
           })
-        }
-
-        res.status(200).json(mock[req.params.id] || {})
       } catch (e) {
         console.error(`[ERROR] article/show/:id -> ${e}`)
         res.status(400).json({
