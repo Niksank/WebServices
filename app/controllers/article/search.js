@@ -16,27 +16,24 @@ module.exports = class Search {
    * Middleware
    */
   middleware () {
-    this.app.post('/article/search', validator.express(check), (req, res) => {
+ 
+    this.app.get('/article/search/', validator.express(this.check), (req, res) => {
       try {
         const result = {}
-        const ids = req.body.ids
-
-        for (let i = 0, len = ids.length; i < len; i += 1) {
-          Object.assign(result, {
-            [ids[i]]: mock[ids[i]]
-          })
-        }
-
-        res.status(200).json(result)
-      } catch (e) {
+        articles.find(id, (err, data) => {
+          console.log(">>>> " + data );
+        });
+  
+    } catch (e) {
         console.error(`[ERROR] article/search -> ${e}`)
         res.status(400).json({
           'code': 400,
           'message': 'Bad request'
         })
       }
-    })
+  } 
   }
+
 
   /**
    * Run
