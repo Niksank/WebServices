@@ -4,6 +4,8 @@ const validator = require('node-validator')
 
 const check = validator.isObject()
   .withRequired('name', validator.isString())
+  .withRequired('age', validator.isNumber())
+
 
 module.exports = class Update {
   constructor (app) {
@@ -26,9 +28,11 @@ module.exports = class Update {
         }
 
         const name = req.body.name
+        const age = req.body.age
         const user = mock[req.params.id]
 
         user.name = name
+        user.age = age
 
         res.status(200).json({
           [req.params.id]: user

@@ -78,6 +78,8 @@ module.exports = class Server {
     new routes.article.CreateArticle(this.app, this.config, this.connect)
     new routes.article.ShowArticle(this.app, this.config, this.connect)
     new routes.article.DestroyArticle(this.app, this.config, this.connect)
+    new routes.article.UpdateArticle(this.app, this.config, this.connect)
+    new routes.article.SearchArticle(this.app, this.config, this.connect)
     // If route not exist
     this.app.use((req, res) => {
       res.status(404).json({

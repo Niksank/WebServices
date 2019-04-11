@@ -1,40 +1,33 @@
-// Core
-const mock = require('../../models/get-user.js')
+ // Dependencies
+const Schema = require('../../models/article.js')
 const validator = require('node-validator')
 
-const check = validator.isObject()
-  .withRequired('name', validator.isString())
-
-module.exports = class Update {
-  constructor (app) {
+module.exports = class UpdateArticle {
+  constructor (app, config, connect) {
     this.app = app
+    this.config = config
+    this.ArticleModel = connect.model('Article', Schema)
 
     this.run()
   }
-
   /**
    * Middleware
    */
   middleware () {
-    this.app.put('/article/update/:id', validator.express(check), (req, res) => {
+    this.app.put('/article/update/:id',(req, res) => {
       try {
-        if (!req.params || !req.params.id.length) {
-          res.status(404).json({
-            code: 404,
-            message: 'Not Found'
+        const articleModel = new this.ArticleModel(req.body)
+
+        this.ArticleModel.findOneAndUpdate({
+          title: req.body.title
+        }).then(article => {
+            res.status(200).json(article || {})
+            
+          }).catch(() => {
+            res.status(200).json({})
           })
-        }
-
-        const name = req.body.name
-        const article = mock[req.params.id]
-
-        article.name = name
-
-        res.status(200).json({
-          [req.params.id]: article
-        })
       } catch (e) {
-        console.error(`[ERROR] article/update -> ${e}`)
+        console.error(`[ERROR] article/update/:id -> ${e}`)
         res.status(400).json({
           'code': 400,
           'message': 'Bad request'
